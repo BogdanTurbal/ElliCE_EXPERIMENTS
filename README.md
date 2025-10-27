@@ -25,10 +25,5 @@ python main_exp_wandb_opt.py unified_config.yml --list-configs
 python main_exp_wandb_opt.py <config_path> -o <output_folder> --wandb_project <wandb_project>
 ```
 
-## Logs and results
-**Stored in:**
-*output/*
-
-## Configuration files
-### - unified_config.yml      (non-continuous datasets)
-### - unified_config_cont.yml (continuous datasets)
+**Logs/results:** `output_folder/`  
+**Configs:** `configs/unified_config.yml` (non-continuous), `configs/unified_config_cont.yml` (continuous)

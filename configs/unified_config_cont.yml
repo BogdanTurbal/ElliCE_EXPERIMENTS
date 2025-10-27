@@ -1,0 +1,472 @@
+# ==================================================================
+# Unified Multi-Method Robustness Evaluation Configuration (Continuous Datasets)
+# ==================================================================
+# This file contains all configurations organized by dataset and model type for continuous datasets
+# Usage: python main_exp_wandb_opt.py unified_config_cont.yml -o output_dir [--mode all|range|specific] [--range start:end] [--specific dataset:model]
+
+# ==================================================================
+# EXECUTION MODE CONFIGURATION
+# ==================================================================
+execution:
+  default_mode: "all"  # Options: "all", "range", "specific"
+  default_range: "0:10"  # Format: "start:end" (0-based indexing)
+  default_specific: "banknote:linear"  # Format: "dataset:model_type"
+
+# ==================================================================
+# GLOBAL DEFAULTS (can be overridden per dataset/model)
+# ==================================================================
+global_defaults:
+  cv_folds: 4
+  valid_split: 0.2
+  epochs: 600
+  batch_size: 512
+  reg_coef: 0.001
+  max_data_support: 40000
+  max_test: 4000
+  max_val: 4000
+  n_retrained: 50
+  n_awp: 600
+  n_lit: 15
+  n_div: 10
+  cpu_parallel: False
+  n_drop_models: 600
+  n_test_samples: 500
+  ellipsoid_iters: 0
+  lambda_overlap: 3.0
+  div_lam: 0.5
+  trex_k: 200
+  trex_K: 100
+  # ElliCE-specific global parameters
+  ellice_lr: 0.1
+  ellice_robust_coef: 0.5
+  ellice_sparsity_coef: 0.0
+  ellice_proximity_coef: 0.0
+  ellice_max_iterations: 1000
+  ellice_opt: "adam"  # Options: "adam", "sgd"
+  mlp_l2_reg: 0.001  # L2 regularization for neural network optimizers
+  filter_loss_l2: 0.001  # L2 regularization added to loss for Rashomon set filtering
+  save_metrics: False  # Save train/test/valid metrics (loss, accuracy, f1) to JSON files
+  global_search:
+    mhp:
+      mode: "range"
+      start: 0.001
+      stop: 0.1
+      step: 0.005
+
+# ==================================================================
+# DATASET CONFIGURATIONS
+# ==================================================================
+datasets:
+  banknote:
+    model_types:
+      linear:
+        model:
+          cls: Linear
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          PROPLACE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.2
+                stop: 4.5
+                step: 0.2
+            params: {}
+          ROAR: 
+            search:
+              mhp:
+                mode: "range"
+                start: 0.01
+                stop: 0.6
+                step: 0.06
+            params: {}
+          TRexI:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.375
+                stop: 1.0
+                step: 0.05
+            params:
+              trex_k: 200
+          LastLayerEllipsoidCEOHCNT:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.2
+                step: 0.005
+            params: {}
+      mlp:
+        model:
+          cls: MLP16
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          PROPLACE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.02
+                stop: 0.5 #1.250
+                step: 0.02
+            params: {}  # Empty dict instead of null
+
+          ROAR:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.01
+                stop: 0.6
+                step: 0.06
+            params: {}  # Empty dict instead of null
+
+          TRexI:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.375
+                stop: 1.0
+                step: 0.1
+            params:  # You can add specific params here
+              trex_k: 200
+              trex_K: 500
+
+          LastLayerEllipsoidCEOHCNT:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.2
+                step: 0.005
+            params: {}
+        n_retrained: 600
+        reg_coef: 0.001
+
+  diabetes:
+    model_types:
+      linear:
+        model:
+          cls: Linear
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          PROPLACE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.2
+                stop: 4.5
+                step: 0.2
+            params: {}
+          ROAR:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.01
+                stop: 0.6
+                step: 0.06
+            params: {}
+          TRexI:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.375
+                stop: 1.0
+                step: 0.1
+            params:
+              trex_k: 200
+          LastLayerEllipsoidCEOHCNT:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.2
+                step: 0.005
+            params: {}
+      mlp:
+        model:
+          cls: MLP16
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          LastLayerEllipsoidCEOHCNT:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.2
+                step: 0.005
+            params: {}
+          PROPLACE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.02
+                stop: 0.5
+                step: 0.02
+            params: {}
+          ROAR:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.01
+                stop: 0.6
+                step: 0.06
+            params: {}
+          TRexI:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.375
+                stop: 1.0
+                step: 0.1
+            params:
+              trex_k: 200
+        # Override specific parameters for this dataset/model combination
+        n_retrained: 600
+        reg_coef: 0.001
+
+  iris:
+    model_types:
+      linear:
+        model:
+          cls: Linear
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          PROPLACE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.2
+                stop: 4.5
+                step: 0.2
+            params: {}
+          ROAR:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.01
+                stop: 0.6
+                step: 0.06
+            params: {}
+          TRexI:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.375
+                stop: 1.0
+                step: 0.1
+            params:
+              trex_k: 200
+          LastLayerEllipsoidCEOHCNT:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.2
+                step: 0.005
+            params: {}
+      mlp:
+        model:
+          cls: MLP16
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          PROPLACE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.02
+                stop: 0.5
+                step: 0.02
+            params: {}
+          ROAR:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.01
+                stop: 0.6
+                step: 0.06
+            params: {}
+          TRexI:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.375
+                stop: 1.0
+                step: 0.1
+            params:
+              trex_k: 200
+          LastLayerEllipsoidCEOHCNT:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.2
+                step: 0.005
+            params: {}
+        n_retrained: 600
+        reg_coef: 0.001
+
+  parkinsons:
+    model_types:
+      linear:
+        model:
+          cls: Linear
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          TRexI:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.375
+                stop: 1.0
+                step: 0.1
+            params:
+              trex_k: 200
+          PROPLACE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.2
+                stop: 4.5
+                step: 0.2
+            params: {}
+          ROAR:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.01
+                stop: 0.6
+                step: 0.06
+            params: {}
+          LastLayerEllipsoidCEOHCNT:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.2
+                step: 0.005
+            params: {}
+      mlp:
+        model:
+          cls: MLP32x32
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          PROPLACE: #needed modification, otherwise didn't produce valid CF
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0001
+                stop: 0.001
+                step: 0.0004
+            params:
+              PROPLACE_k: 5
+          ROAR:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.01
+                stop: 0.6
+                step: 0.06
+            params: {}
+          TRexI:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.375
+                stop: 1.0
+                step: 0.1
+            params:
+              trex_k: 200
+          LastLayerEllipsoidCEOHCNT:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.2
+                step: 0.005
+            params: {}
+        #epochs: 360 #needed more time to converge then usual (250)
+        n_retrained: 600
+        reg_coef: 0.001
+
+  winequality:
+    model_types:
+      linear:
+        model:
+          cls: Linear
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          PROPLACE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.2
+                stop: 4.5
+                step: 0.2
+            params: {}
+          ROAR: 
+            search:
+              mhp:
+                mode: "range"
+                start: 0.01
+                stop: 0.6
+                step: 0.06
+            params: {}
+          TRexI:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.375
+                stop: 1.0
+                step: 0.1
+            params:
+              trex_k: 200
+          LastLayerEllipsoidCEOHCNT:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.2
+                step: 0.005
+            params: {}
+      mlp:
+        model:
+          cls: MLP32x32
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          PROPLACE: #needed modification, otherwise didn't produce CF
+            search:
+              mhp:
+                mode: "range"
+                start: 0.001
+                stop: 0.01
+                step: 0.004
+            params:
+              PROPLACE_k: 5
+          ROAR:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.01
+                stop: 0.6
+                step: 0.06
+            params: {}
+          TRexI:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.375
+                stop: 1.0
+                step: 0.1
+            params:
+              trex_k: 200
+          LastLayerEllipsoidCEOHCNT:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.2
+                step: 0.005
+            params: {}
+        # Override specific parameters for this dataset/model combination
+        n_retrained: 600
+        reg_coef: 0.001

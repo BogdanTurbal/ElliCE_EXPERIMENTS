@@ -1,0 +1,403 @@
+# ==================================================================
+# Unified Multi-Method Robustness Evaluation Configuration (Non-Continuous Datasets)
+# ==================================================================
+# This file contains all configurations organized by dataset and model type for non-continuous datasets
+# Usage: python main_exp_wandb_opt.py unified_config.yml -o output_dir [--mode all|range|specific] [--range start:end] [--specific dataset:model]
+
+# ==================================================================
+# EXECUTION MODE CONFIGURATION
+# ==================================================================
+execution:
+  default_mode: "all"  # Options: "all", "range", "specific"
+  default_range: "0:10"  # Format: "start:end" (0-based indexing)
+  default_specific: "austrc:linear"  # Format: "dataset:model_type"
+
+# ==================================================================
+# GLOBAL DEFAULTS (can be overridden per dataset/model)
+# ==================================================================
+global_defaults:
+  cv_folds: 4
+  valid_split: 0.2
+  epochs: 600
+  batch_size: 512
+  reg_coef: 0.001
+  max_data_support: 50000
+  max_test: 50000
+  max_val: 50000
+  n_retrained: 50
+  n_awp: 600
+  cpu_parallel: False
+
+  n_drop_models: 600
+  n_test_samples: 500
+  ellipsoid_iters: 0
+  lambda_overlap: 3.0
+  div_lam: 0.5
+  trex_k: 200
+  trex_K: 100
+  mlp_l2_reg: 0.001  # L2 regularization for neural network optimizers
+  filter_loss_l2: 0.001  # L2 regularization added to loss for Rashomon set filtering
+  save_metrics: False  # Save train/test/valid metrics (loss, accuracy, f1) to JSON files
+  global_search:
+    mhp:
+      mode: "range"
+      start: 0.001
+      stop: 0.1
+      step: 0.005
+
+# ==================================================================
+# DATASET CONFIGURATIONS
+# ==================================================================
+datasets:
+  austrc:
+    model_types:
+      linear:
+        model:
+          cls: Linear
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          RNCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.2
+                stop: 3.0
+                step: 0.2
+            params: {}
+          LastLayerEllipsoidCEOHC:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.00125
+                stop: 0.25
+                step: 0.0025
+            params: {}
+          STCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.45
+                stop: 1.0
+                step: 0.05
+            params:
+              trex_k: 1000
+              trex_K: 1000
+        # # Override specific parameters for this dataset/model combination
+        # reg_coef: 0.002
+      mlp:
+        model:
+          cls: MLP16
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          RNCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.002
+                stop: 0.1
+                step: 0.004
+            params: {}
+          LastLayerEllipsoidCEOHC:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.25
+                step: 0.0025
+            params: {}
+          STCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.45
+                stop: 1.0
+                step: 0.05
+            params:
+              trex_k: 1000
+              trex_K: 1000
+        n_retrained: 600
+        reg_coef: 0.001
+
+  compas:
+    model_types:
+      linear:
+        model:
+          cls: Linear
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          STCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.45
+                stop: 1.0
+                step: 0.05
+            params:
+              trex_k: 1000
+              trex_K: 1000
+          RNCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.2
+                stop: 3.0
+                step: 0.2
+            params: {}
+          LastLayerEllipsoidCEOHC:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.00125
+                stop: 0.25
+                step: 0.00250
+            params: {}
+        # Override specific parameters for this dataset/model combination
+      mlp:
+        model:
+          cls: MLP64x64
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          STCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.45
+                stop: 1.0
+                step: 0.05
+            params:
+              trex_k: 1000
+              trex_K: 1000
+          RNCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.002
+                stop: 0.1
+                step: 0.004
+            params: {}
+          LastLayerEllipsoidCEOHC:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.25
+                step: 0.0025
+            params: {}
+        # Override specific parameters for this dataset/model combination
+        n_retrained: 600
+        reg_coef: 0.001
+
+  diabetes:
+    model_types:
+      linear:
+        model:
+          cls: Linear
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          STCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.45
+                stop: 1.0
+                step: 0.05
+            params:
+              trex_k: 1000
+              trex_K: 1000
+          RNCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.2
+                stop: 3.0
+                step: 0.2
+            params: {}
+          LastLayerEllipsoidCEOHC:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.00125
+                stop: 0.25
+                step: 0.00250
+            params: {}
+      mlp:
+        model:
+          cls: MLP16
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          STCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.45
+                stop: 1.0
+                step: 0.05
+            params:
+              trex_k: 1000
+              trex_K: 1000
+          RNCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.002
+                stop: 0.1
+                step: 0.004
+            params: {}
+          LastLayerEllipsoidCEOHC:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.25
+                step: 0.0025
+            params: {}
+        # Override specific parameters for this dataset/model combination
+        n_retrained: 600
+        reg_coef: 0.001
+
+  fico:
+    model_types:
+      linear:
+        model:
+          cls: Linear
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          STCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.45
+                stop: 1.0
+                step: 0.05
+            params:
+              trex_k: 1000
+              trex_K: 1000
+          RNCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.2
+                stop: 3.0
+                step: 0.2
+            params: {}
+          LastLayerEllipsoidCEOHC:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.00125
+                stop: 0.25
+                step: 0.00250
+            params: {}
+        # Override specific parameters for this dataset/model combination
+
+      mlp:
+        model:
+          cls: MLP32x32
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          STCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.45
+                stop: 1.0
+                step: 0.05
+            params:
+              trex_k: 1000
+              trex_K: 1000
+          RNCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.002
+                stop: 0.1
+                step: 0.004
+            params: {}
+          LastLayerEllipsoidCEOHC:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.00125
+                stop: 0.25
+                step: 0.0025
+            params: {}
+        # Override specific parameters for this dataset/model combination
+        n_retrained: 600
+        reg_coef: 0.001
+
+  germanc:
+    model_types:
+      linear:
+        model:
+          cls: Linear
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          RNCE: #required smaller range
+            search:
+              mhp:
+                mode: "range"
+                start: 0.2
+                stop: 3.0
+                step: 0.2
+            params: {}
+          LastLayerEllipsoidCEOHC:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.00125
+                stop: 0.25
+                step: 0.0025
+            params: {}
+          PROPLACE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.01
+                stop: 0.3000
+                step: 0.05
+            params: {}
+          STCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.45
+                stop: 1.0
+                step: 0.05
+            params:
+              trex_k: 1000
+              trex_K: 1000
+        # Override specific parameters for this dataset/model combination
+      mlp:
+        model:
+          cls: MLP16
+        target_epsilons: [0.005, 0.02, 0.04, 0.06, 0.08, 0.1]
+        methods:
+          LastLayerEllipsoidCEOHC:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.0025
+                stop: 0.25
+                step: 0.0025
+            params: {}
+          RNCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.002
+                stop: 0.1
+                step: 0.004
+            params: {}
+          STCE:
+            search:
+              mhp:
+                mode: "range"
+                start: 0.45
+                stop: 1.0
+                step: 0.05
+            params:
+              trex_k: 1000
+              trex_K: 1000
+
+        n_retrained: 600
+        reg_coef: 0.001

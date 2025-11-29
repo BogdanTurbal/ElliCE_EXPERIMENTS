@@ -1,3 +1,11 @@
+[![Pypi](https://img.shields.io/pypi/v/nanogcg?color=blue)](https://pypi.org/project/ellice)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![NeurIPS 2025](https://img.shields.io/badge/NeurIPS_2025-Spotlight-red)](https://neurips.cc/virtual/2025/loc/san-diego/poster/118970)
+
+# ElliCE: Efficient and Provably Robust Algorithmic Recourse via the Rashomon Sets
+Full experimental code for the NeurIPS 2025 paper "ElliCE: Efficient and Provably Robust Algorithmic Recourse via the Rashomon Sets".
+> 🚀 The lightweight ElliCE library is available here: [github.com/BogdanTurbal/ellice](https://github.com/BogdanTurbal/ellice)
+
 ## Install required libraries
 ```bash
 pip install -r requirements.txt
